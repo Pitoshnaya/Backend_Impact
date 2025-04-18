@@ -1,8 +1,8 @@
 build:
-    mvn clean package
+	mvn clean package
 
 start: build
-    docker-compose up -d
+	docker-compose up -d
 
 stop:
-    docker-compose stop
+	docker-compose stop
