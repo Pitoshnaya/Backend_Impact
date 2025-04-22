@@ -1,10 +1,23 @@
-FROM openjdk:21
+                        #No usages
 
-COPY ./ /app
-COPY target/Impact-0.0.1-SNAPSHOT.jar app.jar
-WORKDIR /app
+#FROM openjdk:21
 
-RUN sh ./mvnw clean package
+
+#
+#COPY ./ /app
+#
+#WORKDIR /app
+#
+#RUN chmod +x ./mvnw
+#
+## Загружаем зависимости
+#RUN ./mvnw dependency:go-offline
+#
+#
+#RUN sh ./mvnw clean package
+#COPY target/Impact-0.0.1-SNAPSHOT.jar app.jar
+#
+#ENTRYPOINT ["java", "-jar", "app.jar"]
 
 
 
