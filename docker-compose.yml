@@ -19,7 +19,7 @@ services:
       - "8080:8080"
     command: ./launcher.sh
     depends_on:
-      - db
+      - dbservice
     environment:
         SPRING_DATASOURCE_URL: jdbc:postgresql://dbservice:5432/impact_db
         SPRING_DATASOURCE_USERNAME: user
