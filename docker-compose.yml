@@ -9,6 +9,7 @@ services:
       - "5432:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
+      - .mavencache:/root/.m2
   app:
     image: eclipse-temurin:21-jdk
     working_dir: /app
@@ -16,7 +17,7 @@ services:
       - .:/app
     ports:
       - "8080:8080"
-    command: ./mvnw spring-boot:run
+    command: ./launcher.sh
     depends_on:
       - db
     environment:
