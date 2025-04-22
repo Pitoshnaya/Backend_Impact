@@ -1,5 +1,5 @@
 services:
-  db:
+  dbservice:
     image: postgres:latest
     environment:
       POSTGRES_USER: user
@@ -21,7 +21,7 @@ services:
     depends_on:
       - db
     environment:
-        SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/impact_db
+        SPRING_DATASOURCE_URL: jdbc:postgresql://dbservice:5432/impact_db
         SPRING_DATASOURCE_USERNAME: user
         SPRING_DATASOURCE_PASSWORD: userpassword
 volumes:
