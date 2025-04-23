@@ -9,7 +9,8 @@
 git clone https://github.com/Pitoshnaya/Backend_Impact.git
 cd BackendImpactApplication
 ```
-2. Использовать команду make start для запуска приложения в Docker, и make stop для его остановки.
+2. Использовать команду `make start` для запуска приложения в Docker, и `make stop` для его остановки.
+> При изменении кода, происходит автоматическая сборка проекта. Не работает на windows.
 
 
 
