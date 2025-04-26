@@ -1,4 +1,4 @@
-package Pitoshnaya.Impact.Controller;
+package Pitoshnaya.Impact.controller;
 
 
 
