@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
-@RestController                          /////вспомни для чего эта аннотация
-@RequestMapping("/api")            ///// аналогично
+@RestController
+@RequestMapping("/api")
 public class UserController {
     private final AuthService authService;
     private final RegistrationService registrationService;
@@ -24,13 +24,11 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody UserRequest request){
-
         String error=registrationService.register(request.getUsername(),request.getPassword());
 
         if (error != null) {
             return ResponseEntity.badRequest().body(Map.of("error", error));
         }
-
         return ResponseEntity.status(201).body(Map.of("message", "Пользователь успешно зарегистрирован"));
     }
 

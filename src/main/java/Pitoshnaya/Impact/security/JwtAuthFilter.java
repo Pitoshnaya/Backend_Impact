@@ -1,5 +1,6 @@
 package Pitoshnaya.Impact.security;
 
+import jakarta.annotation.Nullable;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,16 +15,18 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-
 @RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
 
-
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+    protected void doFilterInternal(
+        @Nullable HttpServletRequest request,
+        @Nullable HttpServletResponse response,
+        @Nullable FilterChain filterChain
+    )
         throws ServletException, IOException {
 
         try {
@@ -43,8 +46,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         } catch (Exception e) {
             // Логируйте ошибку
         }
-        filterChain.doFilter(request, response);
-
+        if (filterChain != null) {
+            filterChain.doFilter(request, response);
+        }
     }
 
     private String parseJwt(HttpServletRequest request) {
