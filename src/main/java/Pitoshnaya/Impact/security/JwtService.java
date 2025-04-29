@@ -15,13 +15,12 @@ public class JwtService {
     @Value("${jwt.expiration:3600000}")
     private long jwtExpirationMs;
 
-
     public String generateToken(User user) {
         return Jwts.builder()
             .subject(user.getUsername())
             .claim("tokenVersion", user.getTokenVersion())
             .issuedAt(new Date())
-            .expiration(new Date(System.currentTimeMillis() + jwtExpirationMs)) // 15 минут
+            .expiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
             .signWith(getSigningKey())
             .compact();
     }

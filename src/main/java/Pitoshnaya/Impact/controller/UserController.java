@@ -13,7 +13,6 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api")
 public class UserController {
-
     private final AuthService authService;
     private final RegistrationService registrationService;
 
