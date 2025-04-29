@@ -11,11 +11,18 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
+
+    public AuthService(
+        AuthenticationManager authenticationManager,
+        JwtService jwtService,
+    ) {
+        this.authenticationManager = authenticationManager;
+        this.jwtService = jwtService;
+    }
 
     public String login(String username, String password) {
         Authentication authentication = authenticationManager.authenticate(
