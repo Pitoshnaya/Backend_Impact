@@ -15,18 +15,16 @@ public class RegistrationService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public String register(String username, String password) {
+    public User register(String username, String password) {
         if (password.length() < 8) {
-            return "Длина пароля должна быть не менее 8 символов";
+            throw new IllegalArgumentException("Длина пароля должна быть не менее 8 символов");
         }
         if (userRepository.findByUsername(username).isPresent()) {
-            return "Это имя уже занято";
+            throw new IllegalArgumentException("Это имя уже занято");
         }
         User user = new User();
         user.setUsername(username);
         user.setPassword(passwordEncoder.encode(password));
-        userRepository.save(user);
-
-        return null;
+        return userRepository.save(user);
     }
 }
