@@ -1,8 +1,8 @@
 package Pitoshnaya.Impact.config;
 
+import Pitoshnaya.Impact.repository.UserRepository;
 import Pitoshnaya.Impact.security.JwtAuthFilter;
 import Pitoshnaya.Impact.security.JwtService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,6 +24,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
+    private final UserRepository userRepository;
 
     public SecurityConfig(JwtService jwtService, UserDetailsService userDetailsService, UserRepository userRepository) {
         this.jwtService = jwtService;
@@ -60,6 +61,6 @@ public class SecurityConfig {
 
     @Bean
     public JwtAuthFilter jwtAuthFilter() {
-        return new JwtAuthFilter(jwtService, userDetailsService);
+        return new JwtAuthFilter(jwtService, userDetailsService, userRepository);
     }
 }

@@ -1,5 +1,7 @@
 package Pitoshnaya.Impact.service;
 
+import Pitoshnaya.Impact.entity.User;
+import Pitoshnaya.Impact.repository.UserRepository;
 import Pitoshnaya.Impact.security.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,26 +16,33 @@ import org.springframework.stereotype.Service;
 public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
-    private final UserDetailsService userDetailsService;
+    private final UserRepository userRepository;
 
     public AuthService(
         AuthenticationManager authenticationManager,
         JwtService jwtService,
+        UserRepository userRepository
     ) {
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
+        this.userRepository = userRepository;
     }
 
     public String login(String username, String password) {
-        Authentication authentication = authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(
-                username,
-                password
-            )
-        );
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-        return jwtService.generateToken(userDetails);
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                    username,
+                    password
+                )
+            );
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            User user = userRepository.findByUsername(username).orElseThrow();
+            user.setTokenVersion(user.getTokenVersion() + 1);
+            userRepository.save(user);
+            return jwtService.generateToken(user);
+        } catch (Exception e) {
+            return "Bad credentials";
+        }
     }
-
 }

@@ -1,30 +1,25 @@
 package Pitoshnaya.Impact.security;
 
+import Pitoshnaya.Impact.entity.User;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import java.util.Date;
 import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 @Component
 public class JwtService {
-    @Value("${jwt.secret}")
+    @Value("${jwt.secret:my-very-secret-key-that-is-definitely-long-enough!}")
     private String secretKey;
-    private final long jwtExpirationMs = 1000 * 60 * 15;
+    @Value("${jwt.expiration:3600000}")
+    private long jwtExpirationMs;
 
-    private SecretKey getSigningKey() {
-        return Keys.hmacShaKeyFor(secretKey.getBytes());
-    }
 
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(User user) {
         return Jwts.builder()
-            .subject(userDetails.getUsername())
-            .claim("roles", userDetails.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .toList())
+            .subject(user.getUsername())
+            .claim("tokenVersion", user.getTokenVersion())
             .issuedAt(new Date())
             .expiration(new Date(System.currentTimeMillis() + jwtExpirationMs)) // 15 минут
             .signWith(getSigningKey())
@@ -41,6 +36,9 @@ public class JwtService {
     }
 
     public boolean isTokenValid(String token) {
+        if (isTokenExpired(token)) {
+            return false;
+        }
         try {
             Jwts.parser()
                 .verifyWith(getSigningKey())
@@ -52,6 +50,20 @@ public class JwtService {
         }
     }
 
+    public boolean isTokenVersionValid(String token, User user) {
+        Integer tokenVersion = Jwts.parser()
+            .verifyWith(getSigningKey())
+            .build()
+            .parseSignedClaims(token)
+            .getPayload()
+            .get("tokenVersion", Integer.class);
+        return tokenVersion != null && tokenVersion.equals(user.getTokenVersion());
+    }
+
+    private SecretKey getSigningKey() {
+        return Keys.hmacShaKeyFor(secretKey.getBytes());
+    }
+
     private boolean isTokenExpired(String token) {
         Date expiration = Jwts.parser()
             .verifyWith(getSigningKey())
@@ -61,4 +73,5 @@ public class JwtService {
             .getExpiration();
         return expiration.before(new Date());
     }
+
 }
