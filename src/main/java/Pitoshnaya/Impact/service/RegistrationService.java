@@ -15,7 +15,7 @@ public class RegistrationService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public User register(String username, String password) {
+    public void register(String username, String password) {
         if (password.length() < 8) {
             throw new IllegalArgumentException("Длина пароля должна быть не менее 8 символов");
         }
@@ -25,6 +25,6 @@ public class RegistrationService {
         User user = new User();
         user.setUsername(username);
         user.setPassword(passwordEncoder.encode(password));
-        return userRepository.save(user);
+        userRepository.save(user);
     }
 }
