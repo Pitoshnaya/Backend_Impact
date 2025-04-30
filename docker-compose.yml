@@ -21,8 +21,8 @@ services:
     depends_on:
       - dbservice
     environment:
-        SPRING_DATASOURCE_URL: jdbc:postgresql://dbservice:5432/impact_db
-        SPRING_DATASOURCE_USERNAME: user
-        SPRING_DATASOURCE_PASSWORD: userpassword
+        DATASOURCE_URL: jdbc:postgresql://dbservice:5432/impact_db
+        DATASOURCE_USERNAME: user
+        DATASOURCE_PASSWORD: userpassword
 volumes:
   db_data:
