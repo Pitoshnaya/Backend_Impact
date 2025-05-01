@@ -42,7 +42,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
             User user = userRepository.findByUsername(username).orElseThrow();
 
-            if (token != null && jwtService.isTokenValid(token) && jwtService.isTokenVersionValid(token, user)) {
+            if (jwtService.isTokenValid(token) && jwtService.isTokenVersionValid(token, user)) {
                 UsernamePasswordAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(
                         userDetails,
@@ -66,7 +66,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         if (StringUtils.hasText(header) && header.startsWith("Bearer ")) {
             return header.substring(7);
         }
-        return null;
+        return "";
     }
 
 }
