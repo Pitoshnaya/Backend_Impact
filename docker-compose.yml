@@ -18,6 +18,8 @@ services:
     ports:
       - "8080:8080"
     command: ./launcher.sh
+    env_file:
+      - .env
     depends_on:
       - dbservice
     environment:
