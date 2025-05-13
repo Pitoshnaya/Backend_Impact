@@ -16,6 +16,7 @@ public class DatabaseCellInitializer implements CommandLineRunner {
     }
 
     @Override
+    @Transactional
     public void run(String... args) {
         if (cellsDao.count() > 0) {
             return;
