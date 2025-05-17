@@ -8,17 +8,13 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class CellDaoDatabase implements CellsDao {
+
     @PersistenceContext
     private EntityManager em;
 
     @Override
     public void saveCell(Cell cell) {
         em.persist(cell);
-    }
-
-    @Override
-    public void updateCell(Cell cell) {
-        em.merge(cell);
     }
 
     @Override
