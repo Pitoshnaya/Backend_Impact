@@ -1,13 +1,17 @@
 package Pitoshnaya.Impact.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 
 @Entity
-@Table(name = "cell")
+@Table(name = "cell", uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"x", "y"})
+})
 public class Cell {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,9 +26,7 @@ public class Cell {
         this.color = color;
     }
 
-    public Cell() {
-
-    }
+    public Cell() {}
 
     public void setId(Long id) {
         this.id = id;
