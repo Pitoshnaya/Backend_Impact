@@ -22,8 +22,8 @@ public class DatabaseCellInitializer implements CommandLineRunner {
             return;
         }
 
-        for (int i = 1; i <= 25; i++) {
-            for (int j = 1; j <= 25; j++) {
+        for (int i = 1; i <= GridSize.WIDTH; i++) {
+            for (int j = 1; j <= GridSize.HEIGHT; j++) {
                 cellsDao.saveCell(new Cell(i, j, "#ffffff"));
             }
         }
