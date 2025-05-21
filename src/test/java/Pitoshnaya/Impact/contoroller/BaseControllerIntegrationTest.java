@@ -48,7 +48,6 @@ abstract class BaseControllerIntegrationTest {
         token = "Bearer " + Objects.requireNonNull(loginResponse.getBody()).token();
     }
 
-
     private <T, R> ResponseEntity<T> sendRequest(String url, R requestBody, HttpMethod method, Class<T> responseType) {
         url = url.startsWith("/") ? url : "/" + url;
         String fullUrl = "http://localhost:" + port + url;

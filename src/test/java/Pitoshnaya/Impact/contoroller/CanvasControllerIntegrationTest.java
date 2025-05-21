@@ -58,7 +58,6 @@ public class CanvasControllerIntegrationTest extends BaseControllerIntegrationTe
         );
     }
 
-
     public Stream<Arguments> invalidRequestProvider() {
         String maxXValidationError = "Значение не должно превышать " + width;
         String maxYValidationError = "Значение не должно превышать " + height;
