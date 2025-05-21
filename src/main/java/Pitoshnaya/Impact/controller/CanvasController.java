@@ -1,12 +1,14 @@
 package Pitoshnaya.Impact.controller;
 
+
 import Pitoshnaya.Impact.dto.DrawRequest;
+import Pitoshnaya.Impact.entity.Cell;
+import Pitoshnaya.Impact.entity.Pixel;
 import Pitoshnaya.Impact.service.CanvasService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("api/canvas")
@@ -23,4 +25,10 @@ public class CanvasController {
         canvasService.draw(drawRequest);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/getcanvas")
+    public List<Cell> getCanvas(){
+        return canvasService.getCanvas();
+    }
+
 }

@@ -4,7 +4,11 @@ import Pitoshnaya.Impact.dao.CellsDao;
 import Pitoshnaya.Impact.entity.Cell;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Transient;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Repository
 public class CellDaoDatabase implements CellsDao {
@@ -29,5 +33,15 @@ public class CellDaoDatabase implements CellsDao {
     public long count() {
         String jpql = "SELECT COUNT(c) FROM Cell c";
         return em.createQuery(jpql, Long.class).getSingleResult();
+    }
+
+    @Override
+    public List<Cell> getAll() {
+        return em.createQuery("SELECT c FROM Cell c", Cell.class).getResultList();
+    }
+
+    @Transactional
+    public void updateCell(Cell cell) {
+        em.merge(cell);
     }
 }
