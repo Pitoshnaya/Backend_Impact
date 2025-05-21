@@ -3,7 +3,6 @@ package Pitoshnaya.Impact.contoroller;
 import Pitoshnaya.Impact.dto.AuthResponse;
 import Pitoshnaya.Impact.dto.RegisterRequest;
 import java.util.Objects;
-import java.util.UUID;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +30,7 @@ abstract class BaseControllerIntegrationTest {
 
     @BeforeAll
     void beforeAll() {
-        String username = "user_" + UUID.randomUUID();
+        String username = "user_";
         String password = "StrongP@ssword123";
 
         restTemplate.postForEntity(
@@ -75,7 +74,5 @@ abstract class BaseControllerIntegrationTest {
     protected <T, R> ResponseEntity<T> sendPut(String url, R requestBody, Class<T> responseType) {
         return sendRequest(url, requestBody, HttpMethod.PUT, responseType);
     }
-
-
 }
 
