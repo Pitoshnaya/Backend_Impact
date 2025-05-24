@@ -2,7 +2,7 @@ package Pitoshnaya.Impact.dao;
 
 import Pitoshnaya.Impact.entity.Cell;
 
-public interface CellsDao {
+public interface CellDao {
 
     void saveCell(Cell cell);
 

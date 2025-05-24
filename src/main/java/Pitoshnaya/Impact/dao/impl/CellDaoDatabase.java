@@ -1,13 +1,13 @@
 package Pitoshnaya.Impact.dao.impl;
 
-import Pitoshnaya.Impact.dao.CellsDao;
+import Pitoshnaya.Impact.dao.CellDao;
 import Pitoshnaya.Impact.entity.Cell;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class CellDaoDatabase implements CellsDao {
+public class CellDaoDatabase implements CellDao {
 
     @PersistenceContext
     private EntityManager em;
@@ -28,6 +28,7 @@ public class CellDaoDatabase implements CellsDao {
     @Override
     public long count() {
         String jpql = "SELECT COUNT(c) FROM Cell c";
+
         return em.createQuery(jpql, Long.class).getSingleResult();
     }
 }
