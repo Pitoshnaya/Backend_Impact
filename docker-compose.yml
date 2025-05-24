@@ -9,12 +9,12 @@ services:
       - "5432:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
-      - .mavencache:/root/.m2
   app:
     image: eclipse-temurin:21-jdk
     working_dir: /app
     volumes:
       - .:/app
+      - .mavencache:/root/.m2
     ports:
       - "8080:8080"
     command: ./launcher.sh

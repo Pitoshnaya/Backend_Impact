@@ -2,7 +2,6 @@ package Pitoshnaya.Impact.security;
 
 import Pitoshnaya.Impact.entity.User;
 import Pitoshnaya.Impact.repository.UserRepository;
-import jakarta.annotation.Nullable;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,6 +17,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 public class JwtAuthFilter extends OncePerRequestFilter {
+
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
     private final UserRepository userRepository;
@@ -30,14 +30,20 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(
-        @Nullable HttpServletRequest request,
-        @Nullable HttpServletResponse response,
-        @Nullable FilterChain filterChain
+        HttpServletRequest request,
+        HttpServletResponse response,
+        FilterChain filterChain
     )
         throws ServletException, IOException {
 
+        String token = parseJwt(Objects.requireNonNull(request));
+
+        if (token.isEmpty()) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         try {
-            String token = parseJwt(Objects.requireNonNull(request));
             String username = jwtService.getUsernameFromToken(token);
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
             User user = userRepository.findByUsername(username).orElseThrow();
@@ -54,11 +60,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println("Authorization error: " + e.getMessage());
         }
-        if (filterChain != null) {
-            filterChain.doFilter(request, response);
-        }
+        filterChain.doFilter(request, response);
     }
 
     private String parseJwt(HttpServletRequest request) {
