@@ -8,3 +8,5 @@ run-tests:
 	docker compose exec app ./mvnw test
 cli:
 	docker compose exec -it app bash
+codestyle:
+	docker compose exec app ./mvnw spotless:apply checkstyle:check

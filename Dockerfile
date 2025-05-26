@@ -15,7 +15,7 @@
 #
 #
 #RUN sh ./mvnw clean package
-#COPY target/Impact-0.0.1-SNAPSHOT.jar app.jar
+#COPY target/impact-0.0.1-SNAPSHOT.jar app.jar
 #
 #ENTRYPOINT ["java", "-jar", "app.jar"]
 
