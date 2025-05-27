@@ -8,8 +8,8 @@
 		<version>3.4.4</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>Pitoshnaya</groupId>
-	<artifactId>Impact</artifactId>
+	<groupId>pitoshnaya</groupId>
+	<artifactId>backend_impact</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Backend_Impact</name>
 	<description>repo for impact</description>
@@ -28,6 +28,9 @@
 	</scm>
 	<properties>
 		<java.version>21</java.version>
+    <sonar.projectKey>pitoshnaya:backend_impact</sonar.projectKey>
+    <sonar.organization>pitoshnaya</sonar.organization>
+    <sonar.host.url>https://sonarcloud.io</sonar.host.url>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -49,7 +52,7 @@
     <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
-      <version>2.1.214</version>
+      <version>2.2.220</version>
     </dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -107,31 +110,6 @@
 
 	<build>
 		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<annotationProcessorPaths>
-						<path>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
-						</path>
-					</annotationProcessorPaths>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
-					<excludes>
-						<exclude>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
-						</exclude>
-					</excludes>
-				</configuration>
-			</plugin>
-
 			<!-- Запуск тестов с mockito-agent -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -140,9 +118,185 @@
 				<configuration>
 					<argLine>
 						-javaagent:${settings.localRepository}/net/bytebuddy/byte-buddy-agent/1.14.13/byte-buddy-agent-1.14.13.jar
+            ${surefire.jacoco.args}
 					</argLine>
 				</configuration>
 			</plugin>
+
+      <!-- Code quality tools -->
+      <!-- Spotless проверяет кодстайл или применяет его к коду -->
+      <plugin>
+        <groupId>com.diffplug.spotless</groupId>
+        <artifactId>spotless-maven-plugin</artifactId>
+        <version>2.44.4</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <java>
+            <googleJavaFormat />
+          </java>
+        </configuration>
+      </plugin>
+      <!-- Checkstyle проверяет кодстайл -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>3.3.1</version>
+        <configuration>
+          <configLocation>google_checks.xml</configLocation>
+          <suppressionsLocation>config/checkstyle/suppressions.xml</suppressionsLocation>
+          <consoleOutput>true</consoleOutput>
+          <failsOnError>true</failsOnError>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>verify</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <!-- Jacoco генерирует отчет по покрытию кода тестами -->
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>0.8.13</version>
+        <executions>
+          <execution>
+            <id>before-unit-test-execution</id>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+            <configuration>
+              <destFile>${project.build.directory}/jacoco-output/jacoco-unit-tests.exec</destFile>
+              <propertyName>surefire.jacoco.args</propertyName>
+            </configuration>
+          </execution>
+          <execution>
+            <id>after-unit-test-execution</id>
+            <phase>test</phase>
+            <goals>
+              <goal>report</goal>
+            </goals>
+            <configuration>
+              <dataFile>${project.build.directory}/jacoco-output/jacoco-unit-tests.exec</dataFile>
+              <outputDirectory>${project.reporting.outputDirectory}/jacoco-unit-test-coverage-report</outputDirectory>
+            </configuration>
+          </execution>
+          <execution>
+            <id>before-integration-test-execution</id>
+            <phase>pre-integration-test</phase>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+            <configuration>
+              <destFile>${project.build.directory}/jacoco-output/jacoco-integration-tests.exec</destFile>
+              <propertyName>failsafe.jacoco.args</propertyName>
+            </configuration>
+          </execution>
+          <execution>
+            <id>after-integration-test-execution</id>
+            <phase>post-integration-test</phase>
+            <goals>
+              <goal>report</goal>
+            </goals>
+            <configuration>
+              <dataFile>${project.build.directory}/jacoco-output/jacoco-integration-tests.exec</dataFile>
+              <outputDirectory>${project.reporting.outputDirectory}/jacoco-integration-test-coverage-report</outputDirectory>
+            </configuration>
+          </execution>
+          <execution>
+            <id>merge-unit-and-integration</id>
+            <phase>post-integration-test</phase>
+            <goals>
+              <goal>merge</goal>
+            </goals>
+            <configuration>
+              <fileSets>
+                <fileSet>
+                  <directory>${project.build.directory}/jacoco-output/</directory>
+                  <includes>
+                    <include>*.exec</include>
+                  </includes>
+                </fileSet>
+              </fileSets>
+              <destFile>${project.build.directory}/jacoco-output/merged.exec</destFile>
+            </configuration>
+          </execution>
+          <execution>
+            <id>create-merged-report</id>
+            <phase>post-integration-test</phase>
+            <goals>
+              <goal>report</goal>
+            </goals>
+            <configuration>
+              <dataFile>${project.build.directory}/jacoco-output/merged.exec</dataFile>
+              <outputDirectory>${project.reporting.outputDirectory}/jacoco</outputDirectory>
+              <formats>
+                <format>XML</format>
+                <format>HTML</format>
+              </formats>
+            </configuration>
+          </execution>
+          <execution>
+            <id>check</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <rule>
+                  <element>CLASS</element>
+                  <excludes>
+                    <exclude>*Test</exclude>
+                    <exclude>pitoshnaya.impact.config.GridSize</exclude>
+                    <exclude>pitoshnaya.impact.BackendImpactApplication</exclude>
+                  </excludes>
+                  <limits>
+                    <limit>
+                      <counter>LINE</counter>
+                      <value>COVEREDRATIO</value>
+                      <minimum>66%</minimum>
+                    </limit>
+                  </limits>
+                </rule>
+              </rules>
+              <dataFile>${project.build.directory}/jacoco-output/merged.exec</dataFile>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <version>3.5.3</version>
+        <configuration>
+          <argLine>${failsafe.jacoco.args}</argLine>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- Sonarqube - связка анализаторов для проверки качества кода и формирования отчета -->
+      <plugin>
+        <groupId>org.sonarsource.scanner.maven</groupId>
+        <artifactId>sonar-maven-plugin</artifactId>
+        <version>5.1.0.4751</version>
+      </plugin>
+      <!-- #Code quality tools -->
 
 		</plugins>
 	</build>
