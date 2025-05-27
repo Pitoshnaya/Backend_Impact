@@ -15,6 +15,7 @@ import pitoshnaya.impact.service.RegistrationService;
 
 @RestController
 @RequestMapping("/api")
+// TODO покрытие тестами в этом классе в районе 66%. Нужно поднять требования к покрытию до 70+
 public class UserController {
 
   private final AuthService authService;

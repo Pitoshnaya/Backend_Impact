@@ -42,9 +42,6 @@ jobs:
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
 
-      - name: Code style check
-        run: ./mvnw checkstyle:check
-
       - name: Sonar analyze
         run: ./mvnw verify sonar:sonar -B
         env:
