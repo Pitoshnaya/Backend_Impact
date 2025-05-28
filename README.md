@@ -6,7 +6,7 @@
 
 1. Клонируйте репозиторий:
 ```bash
-git clone https://github.com/Pitoshnaya/Backend_Impact.git
+git clone https://github.com/pitoshnaya/Backend_Impact.git
 cd BackendImpactApplication
 ```
 2. Использовать команду `make start` для запуска приложения в Docker, и `make stop` для его остановки.

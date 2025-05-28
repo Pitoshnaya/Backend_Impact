@@ -1,20 +1,18 @@
 services:
   dbservice:
     image: postgres:latest
-    environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: userpassword
-      POSTGRES_DB: impact_db
     ports:
       - "5432:5432"
+    env_file:
+      - .env
     volumes:
       - db_data:/var/lib/postgresql/data
-      - .mavencache:/root/.m2
   app:
     image: eclipse-temurin:21-jdk
     working_dir: /app
     volumes:
       - .:/app
+      - .mavencache:/root/.m2
     ports:
       - "8080:8080"
     command: ./launcher.sh
@@ -22,9 +20,5 @@ services:
       - .env
     depends_on:
       - dbservice
-    environment:
-        DATASOURCE_URL: jdbc:postgresql://dbservice:5432/impact_db
-        DATASOURCE_USERNAME: user
-        DATASOURCE_PASSWORD: userpassword
 volumes:
   db_data:
