@@ -1,5 +1,6 @@
 package pitoshnaya.impact.contoroller;
 
+import java.util.Map;
 import java.util.Objects;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.TestInstance;
@@ -12,6 +13,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.util.UriComponentsBuilder;
 import pitoshnaya.impact.dto.AuthResponse;
 import pitoshnaya.impact.dto.RegisterRequest;
 
@@ -41,9 +43,16 @@ abstract class BaseControllerIntegrationTest {
   }
 
   private <T, R> ResponseEntity<T> sendRequest(
-      String url, R requestBody, HttpMethod method, Class<T> responseType) {
+      String url, R requestBody, HttpMethod method, Class<T> responseType, Map<String, ?> params) {
     url = url.startsWith("/") ? url : "/" + url;
     String fullUrl = "http://localhost:" + port + url;
+
+    UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(fullUrl);
+    if (params != null) {
+      params.forEach(builder::queryParam);
+    }
+
+    fullUrl = builder.build().toUriString();
 
     HttpHeaders headers = new HttpHeaders();
     headers.set("Authorization", token);
@@ -54,11 +63,12 @@ abstract class BaseControllerIntegrationTest {
     return restTemplate.exchange(fullUrl, method, entity, responseType);
   }
 
-  protected ResponseEntity<?> sendGet(String url, Class<?> responseType) {
-    return sendRequest(url, null, HttpMethod.GET, responseType);
+  protected <T> ResponseEntity<T> sendGet(
+      String url, Map<String, ?> params, Class<T> responseType) {
+    return sendRequest(url, null, HttpMethod.GET, responseType, params);
   }
 
   protected <T, R> ResponseEntity<T> sendPut(String url, R requestBody, Class<T> responseType) {
-    return sendRequest(url, requestBody, HttpMethod.PUT, responseType);
+    return sendRequest(url, requestBody, HttpMethod.PUT, responseType, null);
   }
 }

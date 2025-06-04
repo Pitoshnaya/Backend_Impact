@@ -15,6 +15,7 @@ services:
       - .mavencache:/root/.m2
     ports:
       - "8080:8080"
+      - "5005:5005"
     command: ./launcher.sh
     env_file:
       - .env
